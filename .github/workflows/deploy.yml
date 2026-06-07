@@ -58,8 +58,8 @@ jobs:
           # Clean old build directory on remote to prevent storage accumulation
           ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "rm -rf $TARGET_DIR/dist"
 
-          # Copy built files and prisma folder
-          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.PORT }} -r dist prisma package.json package-lock.json ecosystem.config.js ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$TARGET_DIR/
+          # Copy built files, config, and prisma folder
+          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.PORT }} -r dist prisma prisma.config.ts package.json package-lock.json ecosystem.config.js ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$TARGET_DIR/
 
           # Remote installation, Prisma migrations, PM2 reload, and storage clean
           ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash -s' << EOF
