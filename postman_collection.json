@@ -1,0 +1,1414 @@
+{
+	"info": {
+		"_postman_id": "8ba1207e-12fa-48b6-9b5a-93f5b7218683",
+		"name": "Syncline Task Management API",
+		"description": "Postman Collection for Syncline Server API endpoints (including Auth, Users, Projects, Tasks, Comments, Attachments, and Notifications). Base URL is configured as a collection variable pointing to http://localhost:5000.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					]
+				},
+				"description": "Public health check endpoint to verify that the NestJS server is running."
+			},
+			"response": []
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "User Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Registers a new user on the platform."
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in an existing user and returns an accessToken along with a HTTP-only refreshToken cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Uses the refreshToken HTTP-only cookie to obtain a fresh accessToken."
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logs out the authenticated user by revoking the refresh token and clearing cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Info (Me)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Gets current user's profile details."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"Password123\",\n  \"newPassword\": \"NewPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Changes the current password for the logged-in user."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users?searchTerm=&page=1&limit=10&role=&status=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "",
+									"description": "Search by name/email"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "ADMIN, PROJECT_MANAGER, TEAM_MEMBER"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "active, inactive"
+								}
+							]
+						},
+						"description": "Gets a list of all users. Can be searched and filtered."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{targetUserId}}"
+								}
+							]
+						},
+						"description": "Gets user profile details by ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Updated Name",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"description": "Binary image file (optional)",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						},
+						"description": "Updates profile. Users can only update their own profile, unless they are an ADMIN."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"PROJECT_MANAGER\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/:id/role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"role"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{targetUserId}}"
+								}
+							]
+						},
+						"description": "Updates a user's role. Required roles: ADMIN."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isActive\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/:id/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{targetUserId}}"
+								}
+							]
+						},
+						"description": "Enables or disables user account status. Required roles: ADMIN."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Create Project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"New Website Redesign\",\n  \"description\": \"Redesigning the corporate website for better performance and user experience.\",\n  \"deadline\": \"2026-12-31T23:59:59.999Z\",\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects"
+							]
+						},
+						"description": "Creates a new project. Required roles: ADMIN or PROJECT_MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "List Projects",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects?searchTerm=&page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "",
+									"description": "Search projects by name/description (optional)"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (optional, default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of items per page (optional, default: 10)"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt",
+									"description": "Field to sort by (optional)"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"description": "Sort order: 'asc' or 'desc' (optional)"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by status: ACTIVE, COMPLETED, ON_HOLD (optional)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of projects accessible to the authenticated user."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Project by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project to retrieve"
+								}
+							]
+						},
+						"description": "Retrieves detail information for a specific project."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Website Redesign\",\n  \"description\": \"Updated description of the project.\",\n  \"status\": \"COMPLETED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project to update"
+								}
+							]
+						},
+						"description": "Updates details of a project. Required roles: ADMIN or PROJECT_MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project to delete"
+								}
+							]
+						},
+						"description": "Deletes a specific project. Required roles: ADMIN or PROJECT_MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Project Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user-cuid-to-add\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id",
+								"members"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project"
+								}
+							]
+						},
+						"description": "Adds a user to a project. Required roles: ADMIN or PROJECT_MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Project Member",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id/members/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id",
+								"members",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project"
+								},
+								{
+									"key": "userId",
+									"value": "{{memberUserId}}",
+									"description": "The User ID of the member to remove"
+								}
+							]
+						},
+						"description": "Removes a user from a project. Required roles: ADMIN or PROJECT_MANAGER."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Project Activity Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:id/activity-logs?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":id",
+								"activity-logs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{projectId}}",
+									"description": "The ID of the project"
+								}
+							]
+						},
+						"description": "Retrieves the activity logs of a specific project."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Design Landing Page Mockup\",\n  \"description\": \"Create high-fidelity designs for the new landing page.\",\n  \"status\": \"TODO\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2026-06-30T18:00:00.000Z\",\n  \"assigneeId\": \"user-cuid-to-assign\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:projectId/tasks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":projectId",
+								"tasks"
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "{{projectId}}",
+									"description": "The ID of the project to create the task in"
+								}
+							]
+						},
+						"description": "Creates a new task within a project. Title must be 2-150 characters. Status options: TODO, IN_PROGRESS, COMPLETED. Priority options: HIGH, MEDIUM, LOW."
+					},
+					"response": []
+				},
+				{
+					"name": "List Project Tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/projects/:projectId/tasks?searchTerm=&page=1&limit=10&status=TODO&priority=HIGH&assigneeId=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"projects",
+								":projectId",
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "TODO"
+								},
+								{
+									"key": "priority",
+									"value": "HIGH"
+								},
+								{
+									"key": "assigneeId",
+									"value": ""
+								}
+							],
+							"variable": [
+								{
+									"key": "projectId",
+									"value": "{{projectId}}"
+								}
+							]
+						},
+						"description": "Retrieves tasks for a specific project. Allows filtering by status, priority, assigneeId, or search query."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Retrieves detail information for a specific task."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Update Landing Page Mockup Designs\",\n  \"status\": \"IN_PROGRESS\",\n  \"priority\": \"MEDIUM\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Updates a specific task."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Deletes a specific task."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Add Comment to Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"I have completed the first draft of the landing page mockup. Please review.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:taskId/comments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":taskId",
+								"comments"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Adds a comment to a task. Content must be between 1 and 1000 characters."
+					},
+					"response": []
+				},
+				{
+					"name": "List Task Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:taskId/comments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":taskId",
+								"comments"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Retrieves all comments added to a specific task."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/comments/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"comments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{commentId}}"
+								}
+							]
+						},
+						"description": "Deletes a specific comment by ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attachments",
+			"item": [
+				{
+					"name": "Upload Attachment to Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"description": "Binary file to upload (Max: 50MB)",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:taskId/attachments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":taskId",
+								"attachments"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Uploads a binary file as an attachment to a specific task. Allowed key for the file is 'file'. File size limit is 50MB."
+					},
+					"response": []
+				},
+				{
+					"name": "List Task Attachments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/tasks/:taskId/attachments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tasks",
+								":taskId",
+								"attachments"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "{{taskId}}"
+								}
+							]
+						},
+						"description": "Gets all attachments uploaded to a specific task."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Attachment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/attachments/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"attachments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{attachmentId}}"
+								}
+							]
+						},
+						"description": "Deletes a specific attachment by ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "List Notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications?searchTerm=&page=1&limit=15&status=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "",
+									"description": "Search in title/message"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "15"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "read, unread"
+								}
+							]
+						},
+						"description": "Retrieves notifications for the current authenticated user. Allows status filtering (read/unread)."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/:id/read",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notifications",
+								":id",
+								"read"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{notificationId}}"
+								}
+							]
+						},
+						"description": "Marks a specific notification as read."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark All Notifications as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/read-all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notifications",
+								"read-all"
+							]
+						},
+						"description": "Marks all notifications of the authenticated user as read."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/notifications/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"notifications",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{notificationId}}"
+								}
+							]
+						},
+						"description": "Deletes a specific notification by ID."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "your-jwt-access-token-here",
+			"type": "string"
+		},
+		{
+			"key": "projectId",
+			"value": "project-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "taskId",
+			"value": "task-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "commentId",
+			"value": "comment-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "attachmentId",
+			"value": "attachment-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "notificationId",
+			"value": "notification-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "memberUserId",
+			"value": "user-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "your-user-id-placeholder",
+			"type": "string"
+		},
+		{
+			"key": "targetUserId",
+			"value": "target-user-id-placeholder",
+			"type": "string"
+		}
+	]
+}
