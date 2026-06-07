@@ -10,7 +10,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
-  // Programmatically ensure local upload directory exists
   fs.mkdirSync('./public/uploads/avatars', { recursive: true });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,9 +23,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 8000;
   const clientUrl =
-    configService.get<string>('CLIENT_URL') || 'http://localhost:3000';
-
-  // Enforce CORS whitelist matching client configuration
+    configService.get<string>('CLIENT_URL') || 'http://localhost:8001';
   app.enableCors({
     origin: [clientUrl],
     credentials: true,
