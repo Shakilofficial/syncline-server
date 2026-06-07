@@ -59,7 +59,7 @@ export class UserController {
         cb(null, true);
       },
       limits: {
-        fileSize: 10 * 1024 * 1024, // 10 MB
+        fileSize: 10 * 1024 * 1024,
       },
     }),
   )
@@ -70,7 +70,6 @@ export class UserController {
     @CurrentUser() currentUser: AuthenticatedUser,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    // Only allow updating own profile, unless the current user is an Admin
     if (currentUser.id !== id && currentUser.role !== Role.ADMIN) {
       throw new ForbiddenException({
         message: 'You are not authorized to update this profile',
