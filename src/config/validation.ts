@@ -23,7 +23,7 @@ class EnvironmentVariables {
   PORT: number = 8000;
 
   @IsString()
-  CLIENT_URL: string = 'http://localhost:3000';
+  CLIENT_URL: string = 'http://localhost:8001';
 
   @IsString()
   DATABASE_URL!: string;

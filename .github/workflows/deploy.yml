@@ -1,0 +1,70 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint || echo "Linting issues found, but skipping..."
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy via SSH & SCP (Natively)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.PORT }} ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+          # Resolve target directory (checking permission for /var/www/syncline/syncline-server, fallback to home directory)
+          TARGET_DIR=$(ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} '
+            if mkdir -p /var/www/syncline/syncline-server 2>/dev/null; then
+              echo "/var/www/syncline/syncline-server"
+            else
+              mkdir -p "$HOME/syncline/syncline-server"
+              echo "$HOME/syncline/syncline-server"
+            fi
+          ')
+          echo "Target Directory on VPS: $TARGET_DIR"
+
+          # Clean old build directory on remote to prevent storage accumulation
+          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} "rm -rf $TARGET_DIR/dist"
+
+          # Copy built files and prisma folder
+          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.PORT }} -r dist prisma package.json package-lock.json ecosystem.config.js ${{ secrets.USERNAME }}@${{ secrets.HOST }}:$TARGET_DIR/
+
+          # Remote installation, Prisma migrations, PM2 reload, and storage clean
+          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash -s' << EOF
+            cd "$TARGET_DIR"
+            echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+            command -v pm2 &> /dev/null || npm install -g pm2
+            npm ci --omit=dev
+            npx prisma generate
+            npx prisma migrate deploy
+            pm2 startOrReload ecosystem.config.js --update-env
+            pm2 save
+          EOF

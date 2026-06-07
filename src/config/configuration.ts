@@ -1,7 +1,7 @@
 export default () => ({
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '8000', 10),
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
+  clientUrl: process.env.CLIENT_URL || 'http://localhost:8001',
   bcryptSaltRounds: parseInt(process.env.BCRYPT_SALT_ROUNDS || '12', 10),
   userCacheTtl: parseInt(process.env.USER_CACHE_TTL || '300', 10),
   database: {
