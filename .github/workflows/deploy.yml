@@ -8,6 +8,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  DATABASE_URL: postgresql://postgres:craftline%402026@93.127.198.38:5432/syncline_db
 
 jobs:
   build-and-deploy:
